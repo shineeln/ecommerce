@@ -5,6 +5,13 @@ import Product from '../views/Product.vue'
 import Category from '../views/Category.vue'
 import Search from '@/views/Search.vue'
 import Cart from '@/views/Cart.vue'
+import SignUp from '@/views/SignUp.vue'
+import LogIn from '@/views/LogIn.vue'
+import MyAccountVue from '@/views/MyAccount.vue'
+import Checkout from '@/views/Checkout.vue'
+import Success from '@/views/Success.vue'
+import store from '@/store'
+
 
 const routes = [
   {
@@ -26,9 +33,45 @@ const routes = [
     component : Search
   },
   {
+    path : '/sign-up',
+    name : 'SignUp',
+    component : SignUp
+  },
+  {
+    path : '/log-in',
+    name : 'LogIn',
+    component : LogIn
+  },
+  {
+    path : '/log-in',
+    name : 'LogIn',
+    component : LogIn
+  },
+  {
+    path : '/my-account',
+    name : 'MyAccountVue',
+    component : MyAccountVue,
+    meta: {
+      requireLogin : true
+    }
+  },
+  {
+    path : '/cart/checkout',
+    name : 'Checkout',
+    component : Checkout,
+    meta: {
+      requireLogin : true
+    }
+  },
+  {
     path : '/cart',
     name : 'Cart',
     component : Cart
+  },
+  {
+    path : '/cart/success',
+    name : 'Success',
+    component : Success
   },
   {
     path : '/:category_slug/:product_slug/',
@@ -45,6 +88,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requireLogin) && !store.state.isAuthenticated) {
+    next({name : 'Login', query: {to : to.path}})
+  } else {
+    next()
+  }
 })
 
 export default router
